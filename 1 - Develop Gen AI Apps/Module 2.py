@@ -25,7 +25,7 @@ credentials = {
 
 project_id = "skills-network"
 
-model ModelInference(
+model = ModelInference(
     model_id=model_id,
     params=parameters,
     credentials=credentials,
@@ -45,3 +45,12 @@ msg = llama_llm.invoke([
     SystemMessage(content="You are a helpful assistant that translates English to French."),
     HumanMessage(content="Translate the following sentence to French: 'I love programming.'")
 ])
+
+msg = llama_llm.invoke(
+    [
+        SystemMessage(content="You are a supportive AI bot that suggests fitness activities to a user in one short sentence"),
+        HumanMessage(content="I like high-intensity workouts, what should I do?"),
+        AIMessage(content="You should try a CrossFit class"),
+        HumanMessage(content="How often should I attend?")
+    ]
+)
