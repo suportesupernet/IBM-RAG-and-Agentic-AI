@@ -34,3 +34,14 @@ model ModelInference(
 
 msg = model.generate("In today's sales meeting, we ")
 print(msg['results'][0]['generated_text'])
+
+# Chat Model
+llama_llm - WatsonxLLM(model = model)
+print(llama_llm.invoke("Whos is woman's best friend?"))
+
+from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
+
+msg = llama_llm.invoke([
+    SystemMessage(content="You are a helpful assistant that translates English to French."),
+    HumanMessage(content="Translate the following sentence to French: 'I love programming.'")
+])
