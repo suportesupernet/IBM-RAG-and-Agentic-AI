@@ -157,3 +157,34 @@ print(f"Title: {result['title']}")
 print(f"Director: {result['director']}")
 print(f"Year: {result['year']}")
 print(f"Genre: {result['genre']}")
+
+# Documents
+# Document object
+from langchain_core.documents import Document
+
+Document(page_content="""Python is an interpreted high-level general-purpose programming language.
+ Python's design philosophy emphasizes code readability with its notable use of significant indentation.""",
+ metadata={ # optional
+     'my_document_id': 222222,
+     'my_document_source': "About Python",
+     'my_document_create_time': 1680013019
+ })
+
+# Document loaders
+from langchain_community.document_loaders import PyPDFLoader
+loader = PyPDFLoader("https://url.com")
+document = loader.load()
+document[2] # page 2
+print(document[1].page_content[:1000]) # the page 1's first 1000 tokens
+
+# URL and website loader
+from langchain_community.document_loaders import WebBaseLoader
+loader = WebBaseLoader("url")
+web_data = loader.load()
+print(web_data[0].page_content[:1000])
+
+#Text splitters
+from langchain.text_splitter import CharacterTextSplitter
+text_splitter = CharacterTextSplitter(chunk_size=200, chunk_overlap=20, separator="\n")
+chunks = text_splitter.split_documents(document)
+print(len(chunks))
