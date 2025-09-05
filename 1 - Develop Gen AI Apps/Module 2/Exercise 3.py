@@ -45,4 +45,3 @@ def display_document_stats(docs, name):
 display_document_stats(chunks_1, "Splitter 1")
 display_document_stats(chunks_2, "Splitter 2")
 
-teste
