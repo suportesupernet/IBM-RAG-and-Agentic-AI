@@ -65,3 +65,52 @@ qa = RetrievalQA.from_chain_type(
 	return_source_documents=False
 	)
 qa.invoke("what is this paper discussing?")
+
+-----------------------------------------------------
+from langchain_core.documents import Document
+from langchain_community.document_loaders import WebBaseLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.vectorstores import Chroma
+from langchain_ibm import WatsonxEmbeddings
+from ibm_watsonx_ai.metanames import EmbedTextParamsMetaNames
+from langchain.chains import RetrievalQA
+
+loader = WebBaseLoader("url")
+documents = loader.load()
+
+text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
+chunks = text_splitter.split_documents(documents)
+
+embed_params = {
+	EmbedTextParamsMetaNames.TRUNCATE_INPUT_TOKENS: 3,
+	EmbedTextParamsMetaNames.RETURN_OPTIONS: {"input_text": True},
+}
+
+embedding_model = WatsonxEmbeddings(
+	model_id = 'model',
+	url = 'url',
+	project_id = 'project',
+	params = embed_params,
+)
+
+vector_store = Chroma.from_documents(chunks, embedding_model)
+
+retriever = vector_store.as_retriever(search_kargs={"k": 3})
+
+def search_documents(query, top_k=3):
+	docs = retriever.get_relevant_documents(query)
+	return docs[:top_k]
+
+test_queries = [
+	"What is LangChain?",
+	"How do retrievers work?",
+	"Why is document splitting important?"
+]
+
+for query in test_queries:
+	print(f"\nQuery: {query}")
+	results = search_documents(query)
+	print(f"Found {len(results)} relevant documents:")
+	for i, doc in enumerate(results):
+		print(f"\nResult {i+1}: {doc.page_content[:150]}...")
+		print(f"Source: {doc.metadata.get('source', 'Unknown')}")
