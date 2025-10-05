@@ -6,6 +6,37 @@
 <body>
     <h1>AI Assistant</h1>
     <form id="ai-form">
+        <label for="message">Message:</label><br>
+        <textarea id="message" name="message" rows="4" cols="50"></textarea><br>
+        <label for="model">Model:</label><br>
+        <select id="model" name="model">
+            <option value="llama3">Llama3</option>
+            <option value="granite">Granite</option>
+            <option value="mixtral">Mixtral</option>
+        </select><br><br>
+        <button type="submit">Generate</button>
+    </form>
+    <br>
+    <div id="response"></div>
+    <script>
+        document.getElementById('ai-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var message = document.getElementById('message').value;
+            var model = document.getElementById('model').value;
 
+            fetch('/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    'message': message,
+                    'model': model
+                }),
+            })
+            .then(response => response.json())
+            
+        })
+    </script>
 </body>
 </html>
