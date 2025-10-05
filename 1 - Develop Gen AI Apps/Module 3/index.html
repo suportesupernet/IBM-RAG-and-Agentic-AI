@@ -35,8 +35,18 @@
                 }),
             })
             .then(response => response.json())
-            
-        })
+            .then(data => {
+                if (data.error) {
+                    document.getElementById('response').innerText = 'Error: ' + data.error;
+                } else {
+                    document.getElementById('response').innerText = 'Response: ' + data.response + '\nDuration: ' + data.duration.toFixed(2) + ' seconds' + '\nFull JSON: ' + JSON.stringify(data);
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                document.getElementById('response').innerText = 'Error: ' + error;
+            });
+        });
     </script>
 </body>
 </html>
